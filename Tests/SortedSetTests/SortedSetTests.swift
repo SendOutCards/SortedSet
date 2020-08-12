@@ -45,9 +45,9 @@ class SortedSetTests: XCTestCase {
     }
     
     func testInsertionAndRemove() {
-        var set: SortedSet<UInt32> = []
+        var set: SortedSet<Int> = []
         for _ in 0..<200 {
-            let element = arc4random() % 100
+            let element = Int.random(in: 0...100)
             if set.contains(element) {
                 _ = set.remove(element)
             } else {
@@ -58,9 +58,9 @@ class SortedSetTests: XCTestCase {
     }
     
     func testIndexOf() {
-        var set: SortedSet<UInt32> = []
+        var set: SortedSet<Int> = []
         for _ in 0..<1000 {
-            let element = arc4random() % 1000
+            let element = Int.random(in: 0...1000)
             set.insert(element)
             XCTAssert(set.array.firstIndex(of: element) == set.indexOf(element))
         }
@@ -68,9 +68,9 @@ class SortedSetTests: XCTestCase {
     
     func testBruteForceIndexOfPerformance() {
         measure {
-            var set: SortedSet<UInt32> = []
+            var set: SortedSet<Int> = []
             for _ in 0..<1000 {
-                let element = arc4random() % 1000
+                let element = Int.random(in: 0...1000)
                 set.insert(element)
                 _ = set.array.firstIndex(of: element)
             }
@@ -79,13 +79,13 @@ class SortedSetTests: XCTestCase {
     
     func testMassiveSet() {
         measure {
-            var set: SortedSet<UInt32> = []
+            var set: SortedSet<Int> = []
             for _ in 0..<10_000 {
-                let element = arc4random() % 1000
+                let element = Int.random(in: 0...1000)
                 set.insert(element)
             }
             for _ in 0..<10_000 {
-                let element = arc4random() % 1000
+                let element = Int.random(in: 0...1000)
                 _ = set.remove(element)
             }
         }
@@ -93,9 +93,9 @@ class SortedSetTests: XCTestCase {
     
     func testIndexOfPerformance() {
         measure {
-            var set: SortedSet<UInt32> = []
+            var set: SortedSet<Int> = []
             for _ in 0..<1000 {
-                let element = arc4random() % 1000
+                let element = Int.random(in: 0...1000)
                 set.insert(element)
                 _ = set.indexOf(element)
             }
@@ -151,14 +151,14 @@ class SortedSetTests: XCTestCase {
         let source = largeRandomSet(iterations: 10_000, range: 10_000)
         let target = largeRandomSet(iterations: 10_000, range: 10_000)
         measure {
-            _ = SortedSet<UInt32>.diff(source, target)
+            _ = SortedSet<Int>.diff(source, target)
         }
     }
     
-    func largeRandomSet(iterations: Int, range: UInt32) -> SortedSet<UInt32> {
-        var set: SortedSet<UInt32> = []
+    func largeRandomSet(iterations: Int, range: Int) -> SortedSet<Int> {
+        var set: SortedSet<Int> = []
         for _ in 0..<iterations {
-            let element = arc4random() % range
+            let element = Int.random(in: 0...range)
             set.insert(element)
         }
         return set
@@ -169,6 +169,10 @@ class SortedSetTests: XCTestCase {
 struct Person : Hashable, Comparable {
     let hashValue: Int
     let name: String
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(hashValue)
+    }
 }
 
 func ==(lhs: Person, rhs: Person) -> Bool {
